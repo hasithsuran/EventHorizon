@@ -12,9 +12,11 @@ qt6_add_resources(RESOURCES assets/switches.qrc)
 add_executable(xecu-pro
     main.cpp
     MainWindow.cpp
-    ImageToggleSwitch.cpp
     FlipSwitch.cpp
+    ImageToggleSwitch.cpp
     LedIndicator.cpp
+    RegisterMap.cpp
+    CanBus.cpp
     ${RESOURCES}
 )
 
