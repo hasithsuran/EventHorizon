@@ -1,0 +1,76 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/cpp
+{
+	"name": "Virtual ECU",
+	"build": {
+		"dockerfile": "Containerfile"
+	},
+
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "gcc -v",
+
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				// cpp
+				"ms-vscode.cpptools",
+				"ms-vscode.cmake-tools",
+				"josetr.cmake-language-support-vscode",
+				"matepek.vscode-catch2-test-adapter",
+				"xaver.clang-format",
+				"llvm-vs-code-extensions.vscode-clangd",
+				"vadimcn.vscode-lldb",
+				"ryanluker.vscode-coverage-gutters",
+				// shell
+				"mads-hartmann.bash-ide-vscode",
+				"timonwong.shellcheck",
+				// python
+				"ms-python.python",
+				"ms-python.autopep8",
+				"donjayamanne.python-environment-manager",
+				"littlefoxteam.vscode-python-test-adapter",
+				"njpwerner.autodocstring",
+				// markdown
+				"bierner.markdown-preview-github-styles",
+				"yzhang.markdown-all-in-one",
+				"TakumiI.markdowntable",
+				"shuworks.vscode-table-formatter",
+				// csv
+				"mechatroner.rainbow-csv",
+				"janisdd.vscode-edit-csv",
+				// docs
+				"cschlosser.doxdocgen",
+				"astro-build.astro-vscode",
+				// other
+				"ms-vscode.hexeditor",
+				"mhutchie.git-graph",
+				"donjayamanne.githistory",
+				"eamodio.gitlens",
+				"ms-azuretools.vscode-docker"
+			]
+		}
+	},
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	"remoteUser": "root",
+	"features": {},
+	"runArgs": ["--privileged",
+    			"--network=host",
+    			"--env=DISPLAY",
+    			"--volume=/tmp/.X11-unix:/tmp/.X11-unix"],
+	"containerEnv": {
+	"DISPLAY": ":10",
+	"TERM": "xterm-256color",
+	"CLICOLOR": "1",
+	"CLICOLOR_FORCE": "1"
+	},
+
+	"postCreateCommand": "wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh && chmod +x ./dotnet-install.sh && ./dotnet-install.sh --version latest --runtime aspnetcore && rm dotnet-install.sh"
+}
