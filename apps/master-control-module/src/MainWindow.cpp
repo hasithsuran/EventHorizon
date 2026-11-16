@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Don Hasitha Suran Mahawithana
+// SPDX-License-Identifier: MIT
+
 #include "MainWindow.h"
 #include "FlipSwitch.h"
 #include "ImageToggleSwitch.h"
@@ -142,7 +145,10 @@ void MainWindow::onFrameReceived(quint32 canId, QByteArray data)
     }
     else if (canId == CAN_READ_REQ && data.size() >= 1) {
         quint8 reg   = static_cast<quint8>(data[0]);
-        quint8 value = m_regs->read(reg);
+        auto result = m_regs->read(reg);
+        if (!result.has_value())
+            return;
+        quint8 value = result.value();
         m_can->sendFrame(CAN_READ_RESP, QByteArray({char(reg), char(value)}));
     }
 }

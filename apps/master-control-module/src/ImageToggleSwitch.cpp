@@ -1,4 +1,7 @@
-#include "ImageToggleSwitch.h"
+// Copyright (c) 2026 Don Hasitha Suran Mahawithana
+// SPDX-License-Identifier: MIT
+
+#include <ImageToggleSwitch.h>
 #include <QPainter>
 #include <QMouseEvent>
 

@@ -1,4 +1,7 @@
-#include "FlipSwitch.h"
+// Copyright (c) 2026 Don Hasitha Suran Mahawithana
+// SPDX-License-Identifier: MIT
+
+#include <FlipSwitch.h>
 #include <QPainter>
 #include <QPainterPath>
 #include <QMouseEvent>

@@ -1,4 +1,7 @@
-#include "CanBus.h"
+// Copyright (c) 2026 Don Hasitha Suran Mahawithana
+// SPDX-License-Identifier: MIT
+
+#include <CanBus.h>
 #include <QSocketNotifier>
 #include <cstring>
 #include <unistd.h>

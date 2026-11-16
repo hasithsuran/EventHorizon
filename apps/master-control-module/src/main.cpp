@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Don Hasitha Suran Mahawithana
+// SPDX-License-Identifier: MIT
+
 /**
  * @file main.cpp
  * @brief Application entry point.
