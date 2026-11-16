@@ -100,12 +100,16 @@ RUN apt update && apt install -y \
     linux-libc-dev \
     libc6-dev
 
-RUN apt install -y can-utils iproute2
+RUN apt-get update && apt install -y can-utils iproute2
 
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     qt6-svg-dev
 
+RUN apt-get update && apt-get install -y \
+    doxygen \
+    graphviz \
+    doxygen-latex
 
 ENV CMAKE_PREFIX_PATH=/usr/local:$CMAKE_PREFIX_PATH
 ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH

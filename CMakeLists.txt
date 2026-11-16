@@ -26,3 +26,24 @@ target_link_libraries(xecu-pro PRIVATE
     Qt6::Core
     Qt6::Widgets
 )
+
+find_package(Doxygen OPTIONAL_COMPONENTS dot)
+
+if(DOXYGEN_FOUND)
+    set(DOXYGEN_OUTPUT_DIR ${CMAKE_BINARY_DIR}/docs)
+
+    configure_file(
+        ${CMAKE_SOURCE_DIR}/docs/Doxyfile.in
+        ${CMAKE_BINARY_DIR}/Doxyfile
+        @ONLY
+    )
+
+    add_custom_target(docs
+        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_BINARY_DIR}/Doxyfile
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        COMMENT "Generating documentation"
+        VERBATIM
+    )
+else()
+    message(STATUS "Doxygen not found — docs target unavailable")
+endif()

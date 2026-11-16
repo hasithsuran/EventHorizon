@@ -38,11 +38,18 @@ A compact, dark-themed desktop control panel built with Qt6. Designed for embedd
 
 ---
 
-## Build
+## Build project
 
 ```bash
 cmake -S . -B build
 cmake --build build
+```
+---
+
+## Build documentation
+
+```bash
+cmake --build build --target docs
 ```
 
 ---
