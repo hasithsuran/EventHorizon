@@ -109,6 +109,16 @@ RUN apt-get update && apt install -y can-utils iproute2
 RUN apt-get update && apt-get install -y --no-install-recommends \
     qt6-svg-dev
 
+# SimFy: Qt OpenGL modules, Assimp model loading, Mesa GL drivers
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libqt6opengl6-dev \
+    libassimp-dev \
+    zlib1g-dev \
+    libgl1-mesa-dri \
+    libglx-mesa0 \
+    libegl1 \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update && apt-get install -y \
     doxygen \
     graphviz \
