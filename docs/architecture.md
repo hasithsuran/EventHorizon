@@ -17,7 +17,7 @@ services.
 
 ## High-Level Topology
 
-```
+~~~
 ┌─────────────┐     ┌────────────────────────┐     ┌───────────────┐
 │    SimFy    │────▶│  Master Control Module  │◀───▶│ Configurator  │
 │ (Simulator) │     │         (CDC)           │     │               │
@@ -29,7 +29,7 @@ services.
                │Watchdog│  │ Storage │  │  Logger  │
                │Service │  │ Service │  │  Service │
                └────────┘  └─────────┘  └──────────┘
-```
+~~~
 
 ## Documentation
 
@@ -39,3 +39,62 @@ services.
 - Build all docs: `cmake --build . --target docs`
 - Build one component: `cmake --build . --target master-control-module-docs`
 - Browse locally: `cmake --build . --target docs-serve`, then open http://localhost:8080/html/
+
+---
+
+## Space Rover Reference — Curiosity (Mars Science Laboratory)
+
+xECU-pro's rover simulation is modelled on NASA's Curiosity rover. The control units below
+map directly to simulated subsystems in SimFy and master-control-module.
+
+### Main Computers
+
+| Unit | Full Name | Purpose |
+|------|-----------|---------|
+| RCE A/B | Rover Compute Element | Main brain — runs flight software, redundant pair |
+| RPCM | Remote Power Control Module | Power switching and distribution to all subsystems |
+
+### Mobility & Mechanism Controllers
+
+| Unit | Purpose |
+|------|---------|
+| MPFL Motor Controller | Drives 6 wheels independently via rocker-bogie suspension |
+| RSM Motor Controller | Remote Sensing Mast (camera tower) pan/tilt |
+| Arm Motor Controller | Robotic arm — 5 degrees of freedom |
+| Drill Controller | Percussive drill on arm end effector |
+
+### Science Instrument Controllers
+
+| Unit | Purpose |
+|------|---------|
+| ChemCam | Laser + spectrometer controller |
+| RAD | Radiation detector |
+| REMS | Weather station — wind, temperature, pressure |
+| SAM / CheMin | Chemistry lab controllers |
+
+### Power & Thermal
+
+| Unit | Purpose |
+|------|---------|
+| MMRTG Controller | Nuclear power (radioisotope generator) management |
+| Pyro Controller | Fires explosive bolts for deployments |
+| Thermal Controller | Heaters for electronics survival (−130 °C nights) |
+
+### Simulated Subsystems for SIL Testing
+
+The following Curiosity subsystems are the most relevant for xECU-pro SIL simulation:
+
+| Subsystem | Simulation Role |
+|-----------|----------------|
+| RCE | Autonomy and navigation brain — maps to master-control-module |
+| Mobility Controller | Wheel torque, steering, rocker-bogie kinematics — maps to SimFy vehicle model |
+| REMS | Sensor inputs (wind, temperature, pressure) — maps to SimFy environment model |
+| Power | Battery state, MMRTG input — maps to SimFy power subsystem |
+
+### Mars Environment Notes
+
+- Atmosphere is 1% of Earth's density — wind exists but exerts minimal force
+- Dust devils and global dust storms are the primary visible weather phenomena
+- Sky colour: butterscotch/orange-pink due to suspended dust
+- Surface temperature range: −130 °C (night) to +20 °C (day at equator)
+- No magnetic field — navigation relies on star trackers and wheel odometry
