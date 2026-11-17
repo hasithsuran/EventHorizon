@@ -44,6 +44,14 @@ A compact, dark-themed desktop control panel built with Qt6. Designed for embedd
 cmake -S . -B build
 cmake --build build
 ```
+
+## Run
+
+```bash
+./build/apps/compositor/compositor                        # both apps side by side in one window
+./build/apps/master-control-module/master-control-module  # or each app on its own
+./build/apps/SimFy/SimFy
+```
 ---
 
 ## Build documentation

@@ -1,0 +1,82 @@
+#---------------------------------------------------------------------------
+# Project
+#---------------------------------------------------------------------------
+PROJECT_NAME           = "@PROJECT_NAME@"
+PROJECT_NUMBER         = "@PROJECT_VERSION@"
+PROJECT_BRIEF          = "Wayland compositor hosting the xECU-pro apps (xECU-pro component)"
+OUTPUT_DIRECTORY       = @COMPONENT_OUTPUT_DIR@
+
+#---------------------------------------------------------------------------
+# Input
+#---------------------------------------------------------------------------
+INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/include \
+                         @CMAKE_CURRENT_SOURCE_DIR@/src \
+                         @COMPONENT_DOCS_DIR@
+RECURSIVE              = YES
+FILE_PATTERNS          = *.h *.hpp *.cpp *.md
+EXCLUDE_PATTERNS       = */build/* */.git/* */assets/*
+USE_MDFILE_AS_MAINPAGE = @COMPONENT_DOCS_DIR@/architecture.md
+STRIP_FROM_PATH        = @CMAKE_CURRENT_SOURCE_DIR@
+
+#---------------------------------------------------------------------------
+# Cross-references: export a tag file the root docs link against
+#---------------------------------------------------------------------------
+GENERATE_TAGFILE       = @COMPONENT_TAGFILE@
+
+#---------------------------------------------------------------------------
+# Extraction
+#---------------------------------------------------------------------------
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+SHOW_FILES             = YES
+SHOW_NAMESPACES        = YES
+
+#---------------------------------------------------------------------------
+# HTML output
+#---------------------------------------------------------------------------
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
+HTML_DYNAMIC_SECTIONS  = YES
+GENERATE_TREEVIEW      = YES
+
+#---------------------------------------------------------------------------
+# Other output (all off)
+#---------------------------------------------------------------------------
+GENERATE_LATEX         = NO
+GENERATE_MAN           = NO
+GENERATE_XML           = NO
+
+#---------------------------------------------------------------------------
+# Graphs (requires graphviz)
+#---------------------------------------------------------------------------
+HAVE_DOT               = YES
+DOT_NUM_THREADS        = 4
+CLASS_GRAPH            = YES
+COLLABORATION_GRAPH    = YES
+CALL_GRAPH             = YES
+CALLER_GRAPH           = YES
+INCLUDE_GRAPH          = YES
+INCLUDED_BY_GRAPH      = YES
+DOT_IMAGE_FORMAT       = svg
+INTERACTIVE_SVG        = YES
+
+#---------------------------------------------------------------------------
+# Qt-specific: prevent Qt macros confusing the parser
+#---------------------------------------------------------------------------
+PREDEFINED             = Q_OBJECT \
+                         Q_SIGNALS:= \
+                         Q_SLOTS:= \
+                         Q_EMIT:= \
+                         Q_PROPERTY(x):=
+EXPAND_ONLY_PREDEF     = NO
+SKIP_FUNCTION_MACROS   = YES
+
+#---------------------------------------------------------------------------
+# Warnings
+#---------------------------------------------------------------------------
+QUIET                  = NO
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_LOGFILE           = @COMPONENT_OUTPUT_DIR@/doxygen_warnings.log
