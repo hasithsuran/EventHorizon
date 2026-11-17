@@ -1,13 +1,12 @@
 // Copyright (c) 2026 Don Hasitha Suran Mahawithana
 // SPDX-License-Identifier: MIT
 
-#include "SceneView.h"
-#include "Model.h"
-
 #include <QMouseEvent>
 #include <QtMath>
 #include <cmath>
 
+#include <SceneView.h>
+#include <renderer/Model.h>
 namespace {
 
 constexpr float kFovDegrees      = 40.0F;
@@ -119,7 +118,7 @@ void SceneView::initializeGL()
         return;
     }
 
-    m_model = std::make_unique<Model>();
+    m_model = std::make_unique<Rendering::Model>();
     if (!m_model->load(m_modelPath)) {
         qCritical("SimFy: failed to load '%s': %s", qPrintable(m_modelPath),
                   qPrintable(m_model->errorString()));

@@ -17,9 +17,14 @@
 #include <memory>
 #include <vector>
 
-class QOpenGLShaderProgram;
+#include <renderer/Material.h>
+#include <renderer/Mesh.h>
+
 struct aiScene;
 struct aiMaterial;
+class QOpenGLShaderProgram;
+
+namespace Rendering {
 
 /**
  * @class Model
@@ -64,22 +69,6 @@ public:
     QString errorString() const { return m_error; }
 
 private:
-    struct Material
-    {
-        QVector4D                       baseColor{1.0F, 1.0F, 1.0F, 1.0F};
-        std::unique_ptr<QOpenGLTexture> texture;
-        bool                            blend = false;
-    };
-
-    struct Mesh
-    {
-        std::unique_ptr<QOpenGLVertexArrayObject> vao;
-        QOpenGLBuffer                             vbo{QOpenGLBuffer::VertexBuffer};
-        QOpenGLBuffer                             ebo{QOpenGLBuffer::IndexBuffer};
-        GLsizei                                   indexCount = 0;
-        unsigned int                              material   = 0;
-    };
-
     void loadMaterial(const aiScene *scene, const aiMaterial *src, const QString &baseDir);
     void drawMesh(QOpenGLShaderProgram &program, const Mesh &mesh);
 
@@ -89,3 +78,5 @@ private:
     QVector3D                          m_boundsMax;
     QString                            m_error;
 };
+
+} // namespace Rendering

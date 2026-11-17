@@ -1,7 +1,7 @@
 // Copyright (c) 2026 Don Hasitha Suran Mahawithana
 // SPDX-License-Identifier: MIT
 
-#include "Model.h"
+#include <renderer/Model.h>
 
 #include <QFileInfo>
 #include <QImage>
@@ -13,7 +13,7 @@
 #include <limits>
 #include <string_view>
 
-namespace {
+namespace Rendering {
 
 struct Vertex
 {
@@ -35,8 +35,6 @@ QImage imageFromEmbedded(const aiTexture *tex)
                static_cast<int>(tex->mHeight), QImage::Format_ARGB32);
     return img.copy(); // detach from Assimp-owned memory
 }
-
-} // namespace
 
 Model::Model() = default;
 
@@ -196,3 +194,5 @@ void Model::drawMesh(QOpenGLShaderProgram &program, const Mesh &mesh)
     glDrawElements(GL_TRIANGLES, mesh.indexCount, GL_UNSIGNED_INT, nullptr);
     mesh.vao->release();
 }
+
+} // namespace Rendering
