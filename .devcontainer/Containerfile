@@ -119,6 +119,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libegl1 \
     && rm -rf /var/lib/apt/lists/*
 
+# compositor: Qt Wayland Compositor (QML) + Wayland platform plugin for clients
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    qt6-wayland-dev \
+    qt6-wayland \
+    qml6-module-qtwayland-compositor \
+    qml6-module-qtquick \
+    qml6-module-qtquick-window \
+    qml6-module-qtqml-workerscript \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update && apt-get install -y \
     doxygen \
     graphviz \

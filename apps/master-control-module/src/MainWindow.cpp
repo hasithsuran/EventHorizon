@@ -44,7 +44,9 @@ MainWindow::MainWindow(QWidget *parent)
     , m_can(new CanBus("vcan0", this))
     , m_regs(new RegisterMap(this))
 {
-    setFixedSize(280, 680);
+    // Fixed width; height may grow (e.g. when tiled full-height by the compositor)
+    setFixedWidth(280);
+    resize(280, 680);
     setWindowTitle("xECU-pro");
 
     connect(m_regs, &RegisterMap::registerChanged, this, &MainWindow::onRegisterChanged);

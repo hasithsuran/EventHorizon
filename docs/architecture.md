@@ -12,6 +12,7 @@ services.
 |-----------|-------------|
 | <a href="../SimFy/html/index.html">SimFy</a> | 3D world and vehicle model rendering (key classes: SceneView, Model) |
 | <a href="../master-control-module/html/index.html">master-control-module</a> | Central Domain Controller — decision making and arbitration (key classes: RegisterMap, CanBus) |
+| <a href="../compositor/html/index.html">compositor</a> | Wayland compositor that hosts SimFy and master-control-module side by side (key class: ClientLauncher) |
 | [configurator](../configurator/docs/) | Add/configure control module software components and types |
 
 ## High-Level Topology
