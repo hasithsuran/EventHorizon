@@ -24,3 +24,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Core
     Qt6::Widgets
 )
+
+# Builds target master-control-module-docs (see cmake/XecuDocs.cmake)
+xecu_add_component_docs(${PROJECT_NAME})

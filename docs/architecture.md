@@ -11,7 +11,7 @@ services.
 | Component | Description |
 |-----------|-------------|
 | [simulator](../simulator/docs/) | SimFy — 3D world and vehicle model rendering |
-| [master-control-module](../master-control-module/docs/) | Central Domain Controller — decision making and arbitration |
+| <a href="../master-control-module/html/index.html">master-control-module</a> | Central Domain Controller — decision making and arbitration (key classes: RegisterMap, CanBus) |
 | [configurator](../configurator/docs/) | Add/configure control module software components and types |
 
 ## High-Level Topology
@@ -32,6 +32,9 @@ services.
 
 ## Documentation
 
-- Full API docs are generated per component via Doxygen
+- Full API docs are generated per component via Doxygen, each from its own `docs/Doxyfile.in`
 - See each component's `docs/` folder for internal design details
+- Class names mentioned on this page link straight into the component's API docs (via Doxygen tag files)
 - Build all docs: `cmake --build . --target docs`
+- Build one component: `cmake --build . --target master-control-module-docs`
+- Browse locally: `cmake --build . --target docs-serve`, then open http://localhost:8080/html/

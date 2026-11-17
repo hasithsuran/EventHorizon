@@ -54,6 +54,20 @@ cmake --build build --target docs
 
 ---
 
+## Code formatting
+
+Code style is defined in [`.clang-format`](.clang-format) (WebKit/Qt-based, 4-space indent, 100 columns).
+
+```bash
+cmake --build build --target format         # reformat all sources in place
+cmake --build build --target format-check   # check only; fails if anything is unformatted
+```
+
+In the dev container, VS Code formats C/C++ files on save. [`.editorconfig`](.editorconfig) sets basic
+whitespace rules (spaces, LF line endings, final newline) for all other files.
+
+---
+
 ## CAN Protocol
 
 All communication uses a simple register-based protocol over SocketCAN.

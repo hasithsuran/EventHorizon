@@ -32,6 +32,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
+# Expose clang-format-16 as plain `clang-format`
+RUN update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-16 100
+
 # install shared dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     qt6-base-dev \

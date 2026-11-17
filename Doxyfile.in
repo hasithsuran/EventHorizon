@@ -9,11 +9,20 @@ OUTPUT_DIRECTORY       = @DOXYGEN_OUTPUT_DIR@
 #---------------------------------------------------------------------------
 # Input
 #---------------------------------------------------------------------------
-INPUT                  = @CMAKE_SOURCE_DIR@
+# Root docs only cover the top-level pages; component code is documented
+# by each component's own Doxyfile and linked in via TAGFILES below.
+INPUT                  = @CMAKE_SOURCE_DIR@/docs
 RECURSIVE              = YES
-FILE_PATTERNS          = *.h *.hpp *.cpp *.md
+FILE_PATTERNS          = *.md
 EXCLUDE_PATTERNS       = */build/* */.git/* */resources/*
 USE_MDFILE_AS_MAINPAGE = @CMAKE_SOURCE_DIR@/docs/architecture.md
+
+#---------------------------------------------------------------------------
+# Cross-references to component docs
+#---------------------------------------------------------------------------
+TAGFILES               = @XECU_DOC_TAGFILES@
+ALLEXTERNALS           = NO
+EXTERNAL_PAGES         = NO
 
 #---------------------------------------------------------------------------
 # Extraction

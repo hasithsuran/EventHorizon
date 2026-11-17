@@ -1,0 +1,22 @@
+# Basic editor settings for all files (https://editorconfig.org).
+# C/C++ layout rules live in .clang-format; this keeps everything else consistent.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# Trailing double-space is a line break in Markdown
+[*.md]
+trim_trailing_whitespace = false
+
+# Existing JSON files (devcontainer.json) use tabs
+[*.json]
+indent_style = tab
+
+[{Makefile,*.mk}]
+indent_style = tab

@@ -1,0 +1,73 @@
+# xECU-pro code style (clang-format 16).
+# WebKit/Qt-like: 4-space indent, braces on their own line for classes and
+# functions, same line for control statements, leading-comma initializers.
+---
+Language: Cpp
+BasedOnStyle: WebKit
+Standard: c++20
+ColumnLimit: 100
+
+# Indentation
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+AccessModifierOffset: -4
+NamespaceIndentation: None
+IndentCaseLabels: false
+ContinuationIndentWidth: 4
+ConstructorInitializerIndentWidth: 4
+
+# Braces
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterFunction: true
+  AfterNamespace: false
+  AfterEnum: false
+  AfterControlStatement: Never
+  AfterCaseLabel: false
+  BeforeElse: false
+  BeforeCatch: false
+  BeforeLambdaBody: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+FixNamespaceComments: true
+
+# Constructors
+BreakConstructorInitializers: BeforeComma
+PackConstructorInitializers: Never
+
+# Pointers / references:  QWidget *parent
+PointerAlignment: Right
+ReferenceAlignment: Pointer
+
+# Alignment
+AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveDeclarations: Consecutive
+AlignConsecutiveMacros: Consecutive
+AlignTrailingComments: true
+AlignAfterOpenBracket: Align
+AlignOperands: Align
+BinPackParameters: false
+
+# Short forms
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLoopsOnASingleLine: true
+AllowShortLambdasOnASingleLine: All
+AllowShortEnumsOnASingleLine: true
+AllowShortBlocksOnASingleLine: Empty
+
+# Includes: keep the author's grouping, sort within each group
+SortIncludes: CaseSensitive
+IncludeBlocks: Preserve
+
+# Misc
+SpaceAfterTemplateKeyword: true
+SpaceBeforeCpp11BracedList: false
+Cpp11BracedListStyle: true
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 1
+InsertNewlineAtEOF: true

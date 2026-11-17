@@ -53,8 +53,23 @@
 				"mhutchie.git-graph",
 				"donjayamanne.githistory",
 				"eamodio.gitlens",
-				"ms-azuretools.vscode-docker"
-			]
+				"ms-azuretools.vscode-docker",
+				"EditorConfig.EditorConfig"
+			],
+			"settings": {
+				// Format C/C++ on save using the repo's .clang-format
+				"clang-format.executable": "clang-format",
+				"clang-format.style": "file",
+				"C_Cpp.formatting": "disabled",
+				"[cpp]": {
+					"editor.defaultFormatter": "xaver.clang-format",
+					"editor.formatOnSave": true
+				},
+				"[c]": {
+					"editor.defaultFormatter": "xaver.clang-format",
+					"editor.formatOnSave": true
+				}
+			}
 		}
 	},
 
