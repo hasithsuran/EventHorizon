@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 /**
- * @file ClientLauncher.h
+ * @file AppLauncher.h
  * @brief Starts Qt applications as Wayland clients of the compositor.
  */
 
@@ -13,7 +13,7 @@
 #include <QStringList>
 
 /**
- * @class ClientLauncher
+ * @class AppLauncher
  * @brief Launches client applications connected to the compositor's Wayland socket.
  *
  * Each client inherits the compositor's environment with these overrides:
@@ -27,7 +27,7 @@
  * Client processes are owned by the launcher; they are terminated when the
  * launcher is destroyed (and exit on their own if the compositor goes away).
  */
-class ClientLauncher : public QObject
+class AppLauncher : public QObject
 {
     Q_OBJECT
 
@@ -38,7 +38,7 @@ public:
      * @param scaleFactor  Device pixel ratio of the compositor window.
      * @param parent       Optional Qt parent.
      */
-    ClientLauncher(const QString &socketName, qreal scaleFactor, QObject *parent = nullptr);
+    AppLauncher(const QString &socketName, qreal scaleFactor, QObject *parent = nullptr);
 
     /**
      * @brief Starts a client application.

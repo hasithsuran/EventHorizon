@@ -1,12 +1,12 @@
 // Copyright (c) 2026 Don Hasitha Suran Mahawithana
 // SPDX-License-Identifier: MIT
 
-#include "ClientLauncher.h"
-
 #include <QFileInfo>
 #include <QProcess>
 
-ClientLauncher::ClientLauncher(const QString &socketName, qreal scaleFactor, QObject *parent)
+#include <AppLauncher.h>
+
+AppLauncher::AppLauncher(const QString &socketName, qreal scaleFactor, QObject *parent)
     : QObject(parent)
     , m_environment(QProcessEnvironment::systemEnvironment())
 {
@@ -20,7 +20,7 @@ ClientLauncher::ClientLauncher(const QString &socketName, qreal scaleFactor, QOb
     m_environment.remove("QT_SCREEN_SCALE_FACTORS");
 }
 
-void ClientLauncher::launch(const QString &program, const QStringList &arguments)
+void AppLauncher::launch(const QString &program, const QStringList &arguments)
 {
     const QString name = QFileInfo(program).fileName();
 

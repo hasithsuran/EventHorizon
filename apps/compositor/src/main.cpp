@@ -8,9 +8,8 @@
  * Starts a nested Wayland compositor (a window on the current X11/Wayland
  * desktop) and launches master-control-module and SimFy as its clients,
  * tiled side by side.
+ * TODO: More individual apps to be added later so the tiling could change in the future.
  */
-
-#include "ClientLauncher.h"
 
 #include <QDir>
 #include <QFile>
@@ -20,6 +19,7 @@
 #include <QScreen>
 #include <unistd.h>
 
+#include <AppLauncher.h>
 namespace {
 
 /// Wayland socket the compositor listens on; clients receive it via WAYLAND_DISPLAY.
@@ -65,8 +65,19 @@ int main(int argc, char *argv[])
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
     if (engine.rootObjects().isEmpty()) return 1;
 
-    ClientLauncher launcher(kSocketName, scaleFactor);
+    AppLauncher launcher(kSocketName, scaleFactor);
+
+#ifndef XECU_MCM_EXECUTABLE
+    static_assert(false, "XECU_MCM_EXECUTABLE not defined — Please check "
+                         "compile definitions in CMakeLists.txt");
+#endif
+
     launcher.launch(XECU_MCM_EXECUTABLE);
+#ifndef XECU_SIMFY_EXECUTABLE
+    static_assert(false, "XECU_SIMFY_EXECUTABLE not defined — Please check "
+                         "compile definitions in CMakeLists.txt");
+#endif
+
     launcher.launch(XECU_SIMFY_EXECUTABLE);
 
     return app.exec();
