@@ -2,6 +2,8 @@ project(master-control-module VERSION 1.0.0)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 
+set(CMAKE_AUTOMOC ON)
+
 qt6_add_resources(RESOURCES assets/switches.qrc)
 
 file(GLOB_RECURSE HEADERS include/*.h include/*.hpp)
