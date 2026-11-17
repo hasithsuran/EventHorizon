@@ -7,7 +7,7 @@
 
 #include <SceneView.h>
 #include <renderer/Model.h>
-namespace {
+namespace EvH::SimFy {
 
 constexpr float kFovDegrees      = 40.0F;
 constexpr float kDegreesPerPixel = 0.4F;  // mouse drag sensitivity
@@ -85,8 +85,6 @@ void main()
     fragColor = vec4(pow(color, vec3(1.0 / 2.2)), base.a);
 }
 )";
-
-} // namespace
 
 SceneView::SceneView(const QString &modelPath, QWidget *parent)
     : QOpenGLWidget(parent)
@@ -209,3 +207,5 @@ void SceneView::paintGL()
     m_model->draw(m_program);
     m_program.release();
 }
+
+} // namespace EvH::SimFy

@@ -24,7 +24,7 @@ struct aiScene;
 struct aiMaterial;
 class QOpenGLShaderProgram;
 
-namespace Rendering {
+namespace EvH::SimFy::Rendering {
 
 /**
  * @class Model
@@ -79,4 +79,4 @@ private:
     QString                            m_error;
 };
 
-} // namespace Rendering
+} // namespace EvH::SimFy::Rendering

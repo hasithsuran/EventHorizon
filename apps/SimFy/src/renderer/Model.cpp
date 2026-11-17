@@ -13,7 +13,7 @@
 #include <limits>
 #include <string_view>
 
-namespace Rendering {
+namespace EvH::SimFy::Rendering {
 
 struct Vertex
 {
@@ -195,4 +195,4 @@ void Model::drawMesh(QOpenGLShaderProgram &program, const Mesh &mesh)
     mesh.vao->release();
 }
 
-} // namespace Rendering
+} // namespace EvH::SimFy::Rendering

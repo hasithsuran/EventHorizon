@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
-    SceneView view(QApplication::applicationDirPath() + "/assets/space_rover.glb");
+    EvH::SimFy::SceneView view(QApplication::applicationDirPath() + "/assets/space_rover.glb");
     view.show();
     return app.exec();
 }

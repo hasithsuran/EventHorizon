@@ -11,7 +11,7 @@
 #include <QOpenGLTexture>
 #include <QVector4D>
 
-namespace Rendering {
+namespace EvH::SimFy::Rendering {
 
 struct Material
 {
@@ -20,4 +20,4 @@ struct Material
     bool                            blend = false;
 };
 
-} // namespace Rendering
+} // namespace EvH::SimFy::Rendering

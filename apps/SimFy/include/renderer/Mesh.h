@@ -10,7 +10,7 @@
 
 #include <QOpenGLBuffer>
 
-namespace Rendering {
+namespace EvH::SimFy::Rendering {
 
 struct Mesh
 {
@@ -21,4 +21,4 @@ struct Mesh
     unsigned int                              material   = 0;
 };
 
-} // namespace Rendering
+} // namespace EvH::SimFy::Rendering

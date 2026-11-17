@@ -15,9 +15,11 @@
 #include <QVector3D>
 #include <memory>
 
-namespace Rendering {
+namespace EvH::SimFy::Rendering {
 class Model;
 }
+
+namespace EvH::SimFy {
 
 /**
  * @class SceneView
@@ -57,17 +59,19 @@ private:
     void frameModel();
     void updateView();
 
-    QString                           m_modelPath;
-    std::unique_ptr<Rendering::Model> m_model;
-    QOpenGLShaderProgram              m_program;
-    QMatrix4x4                        m_view;
-    QMatrix4x4                        m_projection;
-    QVector3D                         m_cameraPos;
-    QVector3D                         m_target;
-    float                             m_sceneRadius = 1.0F;
-    float                             m_distance    = 1.0F;
-    float                             m_yawDeg      = 0.0F; ///< rotation around the world Y axis
-    float                             m_pitchDeg = 0.0F; ///< elevation above the horizontal plane
-    QPoint                            m_lastMousePos;
-    bool                              m_dragging = false;
+    QString                                       m_modelPath;
+    std::unique_ptr<EvH::SimFy::Rendering::Model> m_model;
+    QOpenGLShaderProgram                          m_program;
+    QMatrix4x4                                    m_view;
+    QMatrix4x4                                    m_projection;
+    QVector3D                                     m_cameraPos;
+    QVector3D                                     m_target;
+    float                                         m_sceneRadius = 1.0F;
+    float                                         m_distance    = 1.0F;
+    float  m_yawDeg   = 0.0F; ///< rotation around the world Y axis
+    float  m_pitchDeg = 0.0F; ///< elevation above the horizontal plane
+    QPoint m_lastMousePos;
+    bool   m_dragging = false;
 };
+
+} // namespace EvH::SimFy
