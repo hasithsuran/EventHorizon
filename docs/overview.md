@@ -1,8 +1,8 @@
-# xECU-pro Architecture
+# EventHorizon Architecture
 
 ## Overview
 
-xECU-pro is a modular automotive ECU simulation platform. It consists of a 3D world simulator
+EventHorizon is a modular automotive ECU simulation platform. It consists of a 3D world simulator
 (SimFy), a master control module, a component configurator, and a set of core communication
 services.
 
@@ -44,7 +44,7 @@ services.
 
 ## Space Rover Reference — Curiosity (Mars Science Laboratory)
 
-xECU-pro's rover simulation is modelled on NASA's Curiosity rover. The control units below
+EventHorizon's rover simulation is modelled on NASA's Curiosity rover. The control units below
 map directly to simulated subsystems in SimFy and master-control-module.
 
 ### Main Computers
@@ -82,7 +82,7 @@ map directly to simulated subsystems in SimFy and master-control-module.
 
 ### Simulated Subsystems for SIL Testing
 
-The following Curiosity subsystems are the most relevant for xECU-pro SIL simulation:
+The following Curiosity subsystems are the most relevant for EventHorizon SIL simulation:
 
 | Subsystem | Simulation Role |
 |-----------|----------------|
@@ -98,3 +98,111 @@ The following Curiosity subsystems are the most relevant for xECU-pro SIL simula
 - Sky colour: butterscotch/orange-pink due to suspended dust
 - Surface temperature range: −130 °C (night) to +20 °C (day at equator)
 - No magnetic field — navigation relies on star trackers and wheel odometry
+
+---
+
+## Runtime Architecture — Applications and Services (Planned)
+
+> **Status:** proposed design. The applications exist today; the services described here are
+> not implemented yet (`services/` is empty). Service, unit and topic names use the `evh`
+> prefix.
+
+EventHorizon separates the simulator into two kinds of software component:
+
+- **Applications** (`apps/`) — Qt front ends that people look at and interact with. They hold no
+  rover state of their own and can be closed or restarted at any time without affecting the
+  simulated rover.
+- **Services** (`services/`) — headless background processes that *are* the simulated rover:
+  its flight software, its hardware and its radio link. They run as **Linux system services**
+  managed by systemd — the Linux equivalent of Windows services — so the operating system starts
+  them in the right order, keeps them running without anyone logged in to a UI, restarts them
+  if they fail, and collects their logs in one place.
+
+The split mirrors a real mission: the rover keeps operating whether or not anyone on the ground
+is watching, and the ground console is just a client of it.
+
+### Component Overview
+
+~~~
+ Applications (Qt, launched by the compositor)              Services (systemd units, always running)
+┌────────────────────────────────────────────┐            ┌──────────────────────────────────────────┐
+│ compositor                                 │            │ evh-hw.service      simulated hardware   │
+│  ├─ master-control-module (ground console) │◀── IPC ──▶ │ evh-obc@A.service   flight software A    │
+│  └─ SimFy (3D world view)                  │  (proxies) │ evh-obc@B.service   flight software B    │
+└────────────────────────────────────────────┘            │ evh-link.service    radio link simulator │
+                                                          └──────────────────────────────────────────┘
+                                                                    all grouped under evh.target
+~~~
+
+### Applications
+
+| Application | Role |
+|-------------|------|
+| compositor | Nested Wayland compositor; one window that tiles the other apps. Launches applications only — never services. |
+| master-control-module | Operator console for the master computer: switches, LEDs and register views. Moves to a thin client of the master control service; its widgets live in `EvH::MasterControl::UI`. |
+| SimFy | 3D world and rover visualisation. Consumes rover state published by the services. |
+
+### Services and Their Purpose
+
+| Unit | Simulates | Purpose |
+|------|-----------|---------|
+| `evh-hw.service` | Rover avionics hardware (cf. Curiosity's RPCM and the RCE's hardware support) | Everything that on a real rover is hardware and keeps working when a computer fails: **power distribution** (turns flight computers on/off), **watchdog timers**, the **A/B side-select latch**, **boot counters**, the **hardware command decoder** (recovery commands that bypass the flight software), NVM fault injection and the **simulation clock**. It is the only component allowed to start, stop or reset a flight computer. |
+| `evh-obc@A.service` / `evh-obc@B.service` | Main computer, redundant pair (cf. RCE A/B) | The master control flight software: owns the CAN bus, the register map, the mode state machine (boot, nominal, safe mode) and persistent state. Same binary for both sides, selected by the unit instance (`%i`). Side B is a cold spare and is only powered on by `evh-hw`. |
+| `evh-link.service` | Radio link between Earth and rover | Relays telecommands up and telemetry down with configurable light-time delay, dropouts and communication windows. |
+| `evh.target` | "Rover powered on" | Groups all services so the whole rover is started or stopped with one command. |
+
+The Watchdog / Storage / Logger services in the *High-Level Topology* above map onto this design
+as follows: watchdogs live in `evh-hw`; storage is per-side NVM owned by each flight computer
+(behind an `IRegisterStore` interface, SQLite in WAL mode as the default backend); logging is
+handled by journald for all units.
+
+### Service Lifecycle Rules
+
+1. **Flight computers never restart themselves.** `evh-obc@.service` uses `Restart=no`; recovery
+   is decided by the simulated watchdog and boot counter in `evh-hw`, exactly as on a rover.
+2. **Simulated hardware is always available.** `evh-hw.service` runs with `Type=notify`,
+   `WatchdogSec=` and `Restart=always`, so systemd itself guards the component that guards the
+   flight computers.
+3. **Power is controlled through systemd.** `evh-hw` starts, stops and kills OBC units through
+   systemd's D-Bus API (`StartUnit`, `StopUnit`, `KillUnit`).
+4. **The watchdog is kicked only when healthy.** Flight software kicks the watchdog from its main
+   loop after health checks pass — never from an independent timer thread.
+5. **User services during development.** Units are installed as `systemctl --user` services, so
+   no root access or polkit rules are needed.
+
+### Communication
+
+- Applications and services talk over a shared middleware; the proposed choice is
+  **Eclipse Zenoh** (shared-memory transport locally, works across machines, usable from non-Qt
+  processes) with **FlatBuffers** or **Protobuf** message definitions.
+- Qt applications never use the middleware directly. Each service gets a generated or hand-written
+  **proxy** `QObject` that receives messages on a worker thread, re-emits them as queued Qt
+  signals and rate-limits high-frequency data to the UI refresh rate.
+- Topics follow the `evh/<area>/...` convention, e.g. `evh/hw/obc/A/wdt/kick`,
+  `evh/hw/latch/side`, `evh/link/uplink`, `evh/sim/clock`.
+- Flight software reaches hardware only through a hardware abstraction layer (watchdog kick,
+  NVM, bus, GPIO); in the simulator that layer talks to `evh-hw`.
+
+### Fault Injection
+
+Because each service is its own systemd unit (and cgroup), failures can be injected without
+modifying code:
+
+| Fault | Injection |
+|-------|-----------|
+| Flight computer hang | `systemctl --user freeze evh-obc@A` (resume with `thaw`) |
+| Flight computer crash | `systemctl --user kill -s SIGKILL evh-obc@A` |
+| Reboot loop, flash corruption, bus faults, link loss | Fault-injection commands handled by `evh-hw` / `evh-link` |
+
+Typical recovery scenario: side A hangs → watchdog expires → `evh-hw` power-cycles A → boot
+counter exceeds its limit → `evh-hw` switches to side B → telemetry reports safe mode → the
+ground console commands recovery.
+
+Follow all components in one timeline with `journalctl --user -u 'evh-*' -f`.
+
+### Development Without systemd
+
+The dev container does not run systemd. Service binaries therefore must not depend on it:
+`sd_notify` is a no-op when `NOTIFY_SOCKET` is unset, and `evh-hw` falls back to launching OBC
+processes directly when systemd is unavailable. Unit files are kept in the repository and
+installed by CMake.
