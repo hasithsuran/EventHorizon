@@ -170,18 +170,67 @@ handled by journald for all units.
 5. **User services during development.** Units are installed as `systemctl --user` services, so
    no root access or polkit rules are needed.
 
-### Communication
+### Communication — Two Levels
 
-- Applications and services talk over a shared middleware; the proposed choice is
-  **Eclipse Zenoh** (shared-memory transport locally, works across machines, usable from non-Qt
-  processes) with **FlatBuffers** or **Protobuf** message definitions.
-- Qt applications never use the middleware directly. Each service gets a generated or hand-written
-  **proxy** `QObject` that receives messages on a worker thread, re-emits them as queued Qt
-  signals and rate-limits high-frequency data to the UI refresh rate.
-- Topics follow the `evh/<area>/...` convention, e.g. `evh/hw/obc/A/wdt/kick`,
+Bus communication and register mapping move out of the Qt applications into backend services.
+Communication then happens on two levels, each with its own purpose:
+
+~~~
+ ┌─────────────────────────┐   ┌───────────────┐
+ │ master-control-module   │   │     SimFy     │                 Qt applications
+ │  (MasterControl proxy)  │   │ (state proxy) │
+ └────────────┬────────────┘   └───────┬───────┘
+              │                        │
+ ═════════════╪════════════════════════╪══════════════════════  Level 1 — application plane
+              │      middleware (Zenoh) + proxies               (outside the simulated rover)
+ ┌────────────┴───┐  ┌────────────────┐  ┌────────────────┐
+ │ evh-obc@A      │  │ subsystem svc  │  │ subsystem svc  │     backend services
+ │ (master ctrl)  │  │ (e.g. mobility)│  │ (e.g. power)   │
+ └────────────┬───┘  └───────┬────────┘  └───────┬────────┘
+              │              │                   │
+ ═════════════╧══════════════╧═══════════════════╧═════════════  Level 2 — bus plane
+                     SocketCAN (vcan0)                           (the rover's internal wiring)
+~~~
+
+| | Level 1 — application plane | Level 2 — bus plane |
+|---|---|---|
+| Represents | Everything *outside* the simulated rover: operator console, 3D view, simulation control, fault injection, simulator plumbing | The rover's *internal wiring* between its avionics units |
+| Participants | Qt applications ↔ backend services; services ↔ `evh-hw` | Backend service ↔ backend service |
+| Transport | Middleware — proposed **Eclipse Zenoh** with **FlatBuffers** or **Protobuf** messages | **SocketCAN** on `vcan0` (CAN / CAN FD frames) |
+| API style | Typed proxies, topics `evh/<area>/...` | Raw CAN IDs and frame layouts defined per subsystem |
+| Purpose | Convenience, typed APIs, high-rate data, observability | Fidelity — the bus traffic is part of what is being simulated |
+
+**Level 1 — application plane**
+
+- Qt applications never use the middleware or CAN directly. Each service has a generated or
+  hand-written **proxy** `QObject` that receives messages on a worker thread, re-emits them as
+  queued Qt signals and rate-limits high-frequency data to the UI refresh rate.
+- Topics follow the `evh/<area>/...` convention, e.g. `evh/obc/registers`, `evh/hw/obc/A/wdt/kick`,
   `evh/hw/latch/side`, `evh/link/uplink`, `evh/sim/clock`.
-- Flight software reaches hardware only through a hardware abstraction layer (watchdog kick,
-  NVM, bus, GPIO); in the simulator that layer talks to `evh-hw`.
+- Discrete hardware signals that are not bus traffic (power switching, watchdog kick, GPIO, NVM
+  access) also travel on this level: flight software reaches them only through a hardware
+  abstraction layer (HAL) whose simulator backend talks to `evh-hw`.
+- High-rate simulation data (e.g. SimFy physics feeding sensor services) belongs here even between
+  two backend services — it is simulator plumbing, not rover wiring.
+
+**Level 2 — bus plane**
+
+- Backend services that model avionics units (the master computer, and later subsystem
+  controllers such as mobility or power) exchange commands, register reads/writes and status
+  over SocketCAN, exactly as the corresponding units would over a physical bus.
+- All services share one CAN library (evolved from today's `CanBus`) instead of each opening
+  raw sockets with their own code.
+- `vcan` delivers frames instantly and does not model bitrate, arbitration or bus load. If timing
+  fidelity matters later, a bus model can be inserted between services.
+
+**Rules that keep the two levels clean**
+
+1. Applications never touch CAN; they observe and command the rover only through proxies.
+2. Avionics units never use the middleware as a shortcut for traffic that would travel on the
+   rover's bus.
+3. Each piece of state has one source of truth; it is not published redundantly on both levels.
+   A service may *expose* what it sees on the bus through its Level 1 API (e.g. the register map),
+   but the bus remains the authoritative path between units.
 
 ### Fault Injection
 

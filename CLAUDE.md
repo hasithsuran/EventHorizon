@@ -58,7 +58,19 @@ Full write-up: `docs/overview.md` → *Runtime Architecture — Applications and
 - **Binaries must run without systemd** (dev container has none): `sd_notify` optional,
   `evh-hw` falls back to launching OBCs directly.
 - **Watchdog kicks** only from the flight software main loop after health checks pass.
-- **IPC:** proposed Eclipse Zenoh (shm locally, network-capable, non-Qt friendly) with FlatBuffers
+- **Two communication levels** (bus communication and register mapping move out of Qt apps into
+  backend services):
+  - *Level 1 — application plane:* Qt apps ↔ backend services via middleware + proxies; also
+    services ↔ `evh-hw` (HAL signals: power, watchdog kick, GPIO, NVM) and high-rate sim data.
+    Represents everything outside the simulated rover.
+  - *Level 2 — bus plane:* backend service ↔ backend service over SocketCAN (`vcan0`), modelling
+    the rover's internal wiring between avionics units (master computer, later mobility/power
+    controllers). One shared CAN library, evolved from `CanBus`.
+  - Rules: apps never touch CAN; units never use middleware as a shortcut for bus traffic; one
+    source of truth per piece of state (services may expose bus-derived state on Level 1).
+  - Assessed as *not* overcomplicated — standard SIL/HIL pattern (data plane vs control plane),
+    as long as the boundary stays clean. `vcan` has no bitrate/arbitration timing.
+- **IPC (Level 1):** proposed Eclipse Zenoh (shm locally, network-capable, non-Qt friendly) with FlatBuffers
   or Protobuf. Qt apps use per-service proxy `QObject`s (worker thread → queued signals,
   rate-limited to UI refresh). Topics: `evh/<area>/...`. D-Bus considered and rejected for
   high-frequency data; ROS 2 interop kept possible via Zenoh/DDS.
