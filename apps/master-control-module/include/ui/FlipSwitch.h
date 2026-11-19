@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QPropertyAnimation>
 
+namespace EvH::MasterControl::UI {
+
 class FlipSwitch : public QWidget
 {
     Q_OBJECT
@@ -30,3 +32,5 @@ private:
     qreal   m_thumbPos = 0.0;   // 0 = OFF, 1 = ON
     QPropertyAnimation *m_anim;
 };
+
+} // namespace EvH::MasterControl::UI

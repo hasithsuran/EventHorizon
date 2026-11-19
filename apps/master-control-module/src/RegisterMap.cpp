@@ -8,6 +8,8 @@
 
 #include <RegisterMap.h>
 
+namespace EvH::MasterControl {
+
 RegisterMap::RegisterMap(QObject *parent)
     : QObject(parent)
 {
@@ -29,3 +31,5 @@ std::optional<uint8_t> RegisterMap::read(quint8 reg) const
     if (it == m_regs.end()) return std::nullopt;
     return it->second;
 }
+
+} // namespace EvH::MasterControl

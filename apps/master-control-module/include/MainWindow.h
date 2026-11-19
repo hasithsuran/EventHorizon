@@ -5,9 +5,14 @@
 #include <QWidget>
 #include <QList>
 
+namespace EvH::MasterControl::UI {
 class FlipSwitch;
 class ImageToggleSwitch;
 class LedIndicator;
+} // namespace EvH::MasterControl::UI
+
+namespace EvH::MasterControl {
+
 class CanBus;
 class RegisterMap;
 
@@ -16,7 +21,7 @@ class MainWindow : public QWidget
     Q_OBJECT
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    LedIndicator *led(int index) const { return m_leds.value(index); }
+    UI::LedIndicator *led(int index) const { return m_leds.value(index); }
 
 protected:
     void paintEvent(QPaintEvent *) override;
@@ -26,9 +31,11 @@ private slots:
     void onFrameReceived(quint32 canId, QByteArray data);
 
 private:
-    FlipSwitch               *m_powerSwitch;
-    QList<ImageToggleSwitch *> m_channelSwitches;
-    QList<LedIndicator *>      m_leds;
-    CanBus                   *m_can;
-    RegisterMap              *m_regs;
+    UI::FlipSwitch                 *m_powerSwitch;
+    QList<UI::ImageToggleSwitch *> m_channelSwitches;
+    QList<UI::LedIndicator *>      m_leds;
+    CanBus                         *m_can;
+    RegisterMap                    *m_regs;
 };
+
+} // namespace EvH::MasterControl

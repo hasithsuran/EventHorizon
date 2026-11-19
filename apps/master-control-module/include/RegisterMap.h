@@ -12,6 +12,8 @@
 #include <map>
 #include <optional>
 
+namespace EvH::MasterControl {
+
 /**
  * @class RegisterMap
  * @brief Models the master controller ECU's internal register space.
@@ -64,3 +66,5 @@ signals:
 private:
     std::map<uint8_t, uint8_t> m_regs;
 };
+
+} // namespace EvH::MasterControl

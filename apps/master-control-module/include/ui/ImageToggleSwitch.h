@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QPixmap>
 
+namespace EvH::MasterControl::UI {
+
 class ImageToggleSwitch : public QWidget
 {
     Q_OBJECT
@@ -27,3 +29,5 @@ private:
     QPixmap m_pixOff;
     QPixmap m_pixOn;
 };
+
+} // namespace EvH::MasterControl::UI

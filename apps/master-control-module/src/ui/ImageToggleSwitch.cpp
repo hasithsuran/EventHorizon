@@ -1,9 +1,11 @@
 // Copyright (c) 2026 Don Hasitha Suran Mahawithana
 // SPDX-License-Identifier: MIT
 
-#include <ImageToggleSwitch.h>
+#include <ui/ImageToggleSwitch.h>
 #include <QPainter>
 #include <QMouseEvent>
+
+namespace EvH::MasterControl::UI {
 
 ImageToggleSwitch::ImageToggleSwitch(const QString &offPath,
                                      const QString &onPath,
@@ -47,3 +49,5 @@ void ImageToggleSwitch::paintEvent(QPaintEvent *)
                  (height() - scaled.height()) / 2,
                  scaled);
 }
+
+} // namespace EvH::MasterControl::UI

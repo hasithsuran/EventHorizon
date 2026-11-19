@@ -1,9 +1,11 @@
 // Copyright (c) 2026 Don Hasitha Suran Mahawithana
 // SPDX-License-Identifier: MIT
 
-#include <LedIndicator.h>
+#include <ui/LedIndicator.h>
 #include <QPainter>
 #include <QRadialGradient>
+
+namespace EvH::MasterControl::UI {
 
 LedIndicator::LedIndicator(QWidget *parent)
     : QWidget(parent)
@@ -90,3 +92,5 @@ void LedIndicator::paintEvent(QPaintEvent *)
         p.drawEllipse(hl);
     }
 }
+
+} // namespace EvH::MasterControl::UI

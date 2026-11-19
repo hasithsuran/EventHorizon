@@ -9,7 +9,7 @@
  */
 
 #include <QApplication>
-#include "MainWindow.h"
+#include <MainWindow.h>
 
 /**
  * @brief Application entry point.
@@ -24,7 +24,7 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    MainWindow window;
+    EvH::MasterControl::MainWindow window;
     window.show();
     return app.exec();
 }

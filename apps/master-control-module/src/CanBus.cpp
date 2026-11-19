@@ -10,6 +10,8 @@
 #include <linux/can.h>
 #include <linux/can/raw.h>
 
+namespace EvH::MasterControl {
+
 CanBus::CanBus(const QString &interface, QObject *parent)
     : QObject(parent)
 {
@@ -82,3 +84,5 @@ void CanBus::onReadyRead()
     emit frameReceived(frame.can_id & CAN_EFF_MASK,
                        QByteArray(reinterpret_cast<char *>(frame.data), frame.can_dlc));
 }
+
+} // namespace EvH::MasterControl

@@ -1,24 +1,28 @@
 // Copyright (c) 2026 Don Hasitha Suran Mahawithana
 // SPDX-License-Identifier: MIT
 
-#include "MainWindow.h"
-#include "FlipSwitch.h"
-#include "ImageToggleSwitch.h"
-#include "LedIndicator.h"
-#include "CanBus.h"
-#include "RegisterMap.h"
+#include <MainWindow.h>
+#include <ui/FlipSwitch.h>
+#include <ui/ImageToggleSwitch.h>
+#include <ui/LedIndicator.h>
+#include <CanBus.h>
+#include <RegisterMap.h>
 #include <QPainter>
 #include <QLinearGradient>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
 
-static constexpr quint32 CAN_WRITE_REG  = 0x100;
-static constexpr quint32 CAN_READ_REQ   = 0x101;
-static constexpr quint32 CAN_READ_RESP  = 0x102;
-static constexpr quint32 CAN_SW_BCAST   = 0x200;
+namespace EvH::MasterControl {
 
-static QLabel* makeLabel(const QString &text, QWidget *parent)
+namespace {
+
+constexpr quint32 CAN_WRITE_REG  = 0x100;
+constexpr quint32 CAN_READ_REQ   = 0x101;
+constexpr quint32 CAN_READ_RESP  = 0x102;
+constexpr quint32 CAN_SW_BCAST   = 0x200;
+
+QLabel* makeLabel(const QString &text, QWidget *parent)
 {
     QLabel *lbl = new QLabel(text, parent);
     lbl->setAlignment(Qt::AlignHCenter);
@@ -30,7 +34,7 @@ static QLabel* makeLabel(const QString &text, QWidget *parent)
     return lbl;
 }
 
-static QWidget* makeTransparentPanel(QWidget *parent)
+QWidget* makeTransparentPanel(QWidget *parent)
 {
     QWidget *w = new QWidget(parent);
     w->setAttribute(Qt::WA_TranslucentBackground);
@@ -38,6 +42,8 @@ static QWidget* makeTransparentPanel(QWidget *parent)
     w->setAutoFillBackground(false);
     return w;
 }
+
+} // namespace
 
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent)
@@ -66,12 +72,12 @@ MainWindow::MainWindow(QWidget *parent)
     left->setContentsMargins(16, 24, 8, 24);
     left->setSpacing(4);
 
-    m_powerSwitch = new FlipSwitch(leftPanel);
+    m_powerSwitch = new UI::FlipSwitch(leftPanel);
     left->addWidget(m_powerSwitch, 0, Qt::AlignHCenter);
     left->addWidget(makeLabel("POWER", leftPanel), 0, Qt::AlignHCenter);
     left->addSpacing(8);
 
-    connect(m_powerSwitch, &FlipSwitch::toggled, this, [this](bool on) {
+    connect(m_powerSwitch, &UI::FlipSwitch::toggled, this, [this](bool on) {
         const quint8 reg = 0x10;
         const quint8 val = on ? 1 : 0;
         m_regs->write(reg, val);
@@ -80,7 +86,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     const QStringList names = { "CH 1", "CH 2", "CH 3", "CH 4" };
     for (int i = 0; i < names.size(); ++i) {
-        auto *sw = new ImageToggleSwitch(
+        auto *sw = new UI::ImageToggleSwitch(
             ":/switches/switch_off.png",
             ":/switches/switch_on.png",
             leftPanel);
@@ -89,7 +95,7 @@ MainWindow::MainWindow(QWidget *parent)
         left->addWidget(makeLabel(names[i], leftPanel), 0, Qt::AlignHCenter);
         left->addSpacing(2);
 
-        connect(sw, &ImageToggleSwitch::toggled, this, [this, i](bool on) {
+        connect(sw, &UI::ImageToggleSwitch::toggled, this, [this, i](bool on) {
             const quint8 reg = 0x11 + i;
             const quint8 val = on ? 1 : 0;
             m_regs->write(reg, val);
@@ -116,7 +122,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     const QStringList ledNames = { "L1", "L2", "L3", "L4" };
     for (const QString &lname : ledNames) {
-        auto *led = new LedIndicator(rightPanel);
+        auto *led = new UI::LedIndicator(rightPanel);
         m_leds.append(led);
         right->addWidget(led, 0, Qt::AlignHCenter);
         right->addWidget(makeLabel(lname, rightPanel), 0, Qt::AlignHCenter);
@@ -133,8 +139,8 @@ void MainWindow::onRegisterChanged(quint8 reg, quint8 value)
 {
     if (reg > 0x03) return;
 
-    static const LedIndicator::Color colorMap[] = {
-        LedIndicator::Off, LedIndicator::Green, LedIndicator::Amber, LedIndicator::Red
+    static const UI::LedIndicator::Color colorMap[] = {
+        UI::LedIndicator::Off, UI::LedIndicator::Green, UI::LedIndicator::Amber, UI::LedIndicator::Red
     };
     m_leds[reg]->setColor(colorMap[qMin(value, quint8(3))]);
 }
@@ -163,3 +169,5 @@ void MainWindow::paintEvent(QPaintEvent *)
     gradient.setColorAt(1.0, QColor(0x3d, 0x3d, 0x3d));
     p.fillRect(rect(), gradient);
 }
+
+} // namespace EvH::MasterControl

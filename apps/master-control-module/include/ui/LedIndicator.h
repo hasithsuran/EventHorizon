@@ -4,6 +4,8 @@
 #pragma once
 #include <QWidget>
 
+namespace EvH::MasterControl::UI {
+
 class LedIndicator : public QWidget
 {
     Q_OBJECT
@@ -21,3 +23,5 @@ protected:
 private:
     Color m_color = Off;
 };
+
+} // namespace EvH::MasterControl::UI

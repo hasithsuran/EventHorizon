@@ -7,6 +7,8 @@
 
 class QSocketNotifier;
 
+namespace EvH::MasterControl {
+
 class CanBus : public QObject
 {
     Q_OBJECT
@@ -28,3 +30,5 @@ private:
     int              m_fd       = -1;
     QSocketNotifier *m_notifier = nullptr;
 };
+
+} // namespace EvH::MasterControl

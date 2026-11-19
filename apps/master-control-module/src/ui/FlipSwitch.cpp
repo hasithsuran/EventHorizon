@@ -1,11 +1,13 @@
 // Copyright (c) 2026 Don Hasitha Suran Mahawithana
 // SPDX-License-Identifier: MIT
 
-#include <FlipSwitch.h>
+#include <ui/FlipSwitch.h>
 #include <QPainter>
 #include <QPainterPath>
 #include <QMouseEvent>
 #include <QPropertyAnimation>
+
+namespace EvH::MasterControl::UI {
 
 FlipSwitch::FlipSwitch(QWidget *parent)
     : QWidget(parent)
@@ -83,3 +85,5 @@ void FlipSwitch::paintEvent(QPaintEvent *)
     p.setBrush(rg);
     p.drawEllipse(thumb);
 }
+
+} // namespace EvH::MasterControl::UI
