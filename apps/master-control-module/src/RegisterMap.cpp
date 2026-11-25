@@ -6,6 +6,7 @@
  * @brief RegisterMap implementation.
  */
 
+#include <Protocol.h>
 #include <RegisterMap.h>
 
 namespace EvH::MasterControl {
@@ -13,8 +14,10 @@ namespace EvH::MasterControl {
 RegisterMap::RegisterMap(QObject *parent)
     : QObject(parent)
 {
-    for (quint8 i = 0x00; i <= 0x03; ++i) m_regs[i] = 0;
-    for (quint8 i = 0x10; i <= 0x14; ++i) m_regs[i] = 0;
+    using namespace Protocol::Register;
+    for (int i = 0; i < LedCount; ++i) m_regs[LedBase + i] = 0;
+    m_regs[Power] = 0;
+    for (int i = 0; i < ChannelCount; ++i) m_regs[ChannelBase + i] = 0;
 }
 
 void RegisterMap::write(quint8 reg, quint8 value)

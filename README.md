@@ -31,7 +31,7 @@ A compact, dark-themed desktop control panel built with Qt6. Designed for embedd
 
 ## Requirements
 
-- Qt 6.4 or later (Widgets module)
+- Qt 6.4 or later (Qml, Quick for master-control-module; Widgets for SimFy; WaylandCompositor for compositor)
 - CMake 3.20+
 - C++17
 - Linux kernel with SocketCAN (`vcan` module)
@@ -222,18 +222,24 @@ cansend vcan0 200#13.00
 ## Project Structure
 
 ```
-xecu-pro/
-├── main.cpp
-├── MainWindow.h / .cpp
-├── FlipSwitch.h / .cpp        — animated horizontal flip switch
-├── ImageToggleSwitch.h / .cpp — PNG-based bat switch
-├── LedIndicator.h / .cpp      — glowing LED bulb widget
-├── CanBus.h / .cpp            — SocketCAN integration (QSocketNotifier)
-├── RegisterMap.h / .cpp       — virtual register map
+apps/master-control-module/
 ├── CMakeLists.txt
-└── assets/
-    └── switches.qrc
+├── include/
+│   ├── CanBus.h               — SocketCAN integration (QSocketNotifier)
+│   ├── ControlPanel.h         — controller exposed to QML (owns CanBus + RegisterMap)
+│   ├── Protocol.h             — CAN IDs and register addresses
+│   └── RegisterMap.h          — virtual register map
+├── src/                       — implementations + main.cpp
+├── qml/
+│   └── Main.qml               — control panel window
+├── ui/                        — QML module EvH.MasterControl.UI
+│   ├── FlipSwitch.qml         — animated horizontal flip switch
+│   ├── ImageToggleSwitch.qml  — PNG-based bat switch
+│   └── LedIndicator.qml       — glowing LED bulb
+└── assets/                    — switch images
 ```
+
+See [apps/master-control-module/docs/architecture.md](apps/master-control-module/docs/architecture.md) for the design.
 
 ---
 

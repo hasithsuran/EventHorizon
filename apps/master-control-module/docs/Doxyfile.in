@@ -68,7 +68,10 @@ PREDEFINED             = Q_OBJECT \
                          Q_SIGNALS:= \
                          Q_SLOTS:= \
                          Q_EMIT:= \
-                         Q_PROPERTY(x):=
+                         Q_PROPERTY(x):= \
+                         Q_ENUM(x):= \
+                         QML_ELEMENT:= \
+                         QML_UNCREATABLE(x):=
 EXPAND_ONLY_PREDEF     = NO
 SKIP_FUNCTION_MACROS   = YES
 

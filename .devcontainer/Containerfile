@@ -129,6 +129,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     qml6-module-qtqml-workerscript \
     && rm -rf /var/lib/apt/lists/*
 
+# master-control-module: Qt Quick (QML) UI runtime modules
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    qml6-module-qtquick \
+    qml6-module-qtquick-window \
+    qml6-module-qtquick-templates \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update && apt-get install -y \
     doxygen \
     graphviz \

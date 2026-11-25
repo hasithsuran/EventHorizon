@@ -4,7 +4,8 @@
 
 ## Overview
 
-The compositor combines the xECU-pro Qt Widgets apps into one window. It is a
+The compositor combines the xECU-pro apps (master-control-module in Qt Quick,
+SimFy in Qt Widgets) into one window. It is a
 nested Wayland compositor built with Qt Wayland Compositor (QML scene, C++
 host): it opens a normal window on the current desktop, creates its own
 Wayland socket (`xecu-wayland-0`) and launches each app as a Wayland client.
